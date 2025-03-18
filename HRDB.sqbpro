@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/ihsan/VScodeProject/side-project/HRDB.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="150"/><column_width id="3" width="2695"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,15:mainassessment_role"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="assessment_role" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="61"/><column index="2" value="74"/><column index="3" value="128"/><column index="4" value="61"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">CREATE TABLE competency_categories (
+    category_id INTEGER PRIMARY KEY NOT NULL,
+    category_name CHAR(50) NOT NULL,
+    core TEXT CHECK(core IN ('CORE', 'TEAM', 'MANA', 'SOSC')),
+    description CHAR(300)
+);
+
+CREATE TABLE competency_key (
+    key_id INTEGER PRIMARY KEY NOT NULL,
+    key_code CHAR(12) UNIQUE NOT NULL,
+    category_id INTEGER NOT NULL,
+    competency_name TEXT NOT NULL,
+    FOREIGN KEY (category_id) REFERENCES competency_categories(category_id)
+);
+
+CREATE TABLE indicators (
+    id INTEGER PRIMARY KEY NOT NULL,
+    role_id INTEGER NOT NULL,
+    assessment_tool INTEGER NOT NULL,
+    description TEXT,
+    indicator_item CHAR(255) NOT NULL
+);
+
+CREATE TABLE evidences (
+    id INTEGER PRIMARY KEY NOT NULL,
+    indicator_id INTEGER NOT NULL,
+    evidence TEXT,
+    scored_by TEXT,
+    justification TEXT,
+    FOREIGN KEY (indicator_id) REFERENCES indicators(id)
+);
+
+CREATE TABLE scores (
+    key_id INTEGER NOT NULL,
+    evidence_id INTEGER NOT NULL,
+    score INTEGER NOT NULL,
+    scoring_date DATE NOT NULL,
+    PRIMARY KEY (key_id, evidence_id),
+    FOREIGN KEY (key_id) REFERENCES competency_key(key_id),
+    FOREIGN KEY (evidence_id) REFERENCES evidences(id)
+);
+
+CREATE TABLE assessment_role (
+    id INTEGER PRIMARY KEY NOT NULL,
+    model TEXT CHECK(model IN ('keybe', 'definisi')),
+    function_id INTEGER NOT NULL,
+    label TEXT
+);
+
+CREATE TABLE sectors (
+    id INTEGER PRIMARY KEY NOT NULL,
+    code CHAR(6) NOT NULL,
+    name CHAR(160) NOT NULL,
+    description TEXT
+);
+
+CREATE TABLE job_level (
+    id INTEGER PRIMARY KEY NOT NULL,
+    sector_id INTEGER NOT NULL,
+    code TEXT,
+    title TEXT,
+    FOREIGN KEY (sector_id) REFERENCES sectors(id)
+);
+
+CREATE TABLE job_functions (
+    id INTEGER PRIMARY KEY NOT NULL,
+    code CHAR(12) NOT NULL,
+    label CHAR(180) NOT NULL,
+    level_id INTEGER NOT NULL,
+    definisi CHAR(255),
+    FOREIGN KEY (level_id) REFERENCES job_level(id)
+);
+</sql><current_tab id="0"/></tab_sql></sqlb_project>

@@ -1,0 +1,36 @@
+# Environment Variables
+.env
+*.env
+
+# Secrets and Credentials
+client_secret.json
+
+# Database Files
+*.db
+*.sqlite3
+*.sqbpro  # SQLite Browser project files
+
+# Python Bytecode and Caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
+ENV/
+*.egg-info/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Logs and Debug Files
+logs/
+*.log
+debug.log
+
+# Compiled and System Files
+.DS_Store
+Thumbs.db
+
+# VSCode Settings (Optional)
+.vscode/
