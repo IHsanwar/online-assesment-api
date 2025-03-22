@@ -1,10 +1,10 @@
 from flask import Blueprint, request
-from Controllers.AssesmentRoleController import AssessmentRoleController
+from Controllers.AssesmentRoleController import AssessmentRoleController   
 
 assessment_role_bp = Blueprint("assessment_role", __name__)
 
-@assessment_role_bp.route("/assessment_roles", methods=["GET"])
-def get_all_assessment_roles():
+@assessment_role_bp.route("/assessment_roles", methods=["GET"]) 
+def get_all_assessment_roles(): 
     return AssessmentRoleController.get_all_assessment_roles()
 
 @assessment_role_bp.route("/assessment_roles/<int:role_id>", methods=["GET"])

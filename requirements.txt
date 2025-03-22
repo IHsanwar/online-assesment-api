@@ -5,6 +5,8 @@ python-dotenv
 google-auth
 google-auth-oauthlib
 google-auth-httplib2
-google-auth-transport
+#google-auth-transport
 PyJWT
 requests
+flask_jwt_extended
+authlib

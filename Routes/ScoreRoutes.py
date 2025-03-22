@@ -1,13 +1,20 @@
 from flask import Blueprint, request, jsonify
-from Controllers.ScoreController import ScoreController,Score
-from flask_jwt_extended import jwt_required, get_jwt_identity
-score_bp = Blueprint("score_bp", __name__)
+from Controllers.ScoreController import ScoreController, Score
+from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
 
 score_controller = ScoreController()
+score_bp = Blueprint("score", __name__)
 
-@score_bp.route("/scores", methods=["GET"])
+# Register auth blueprint (if not already done in app.py)
+# app.register_blueprint(auth_bp, url_prefix='/auth')
+
+
+@score_bp.route("/scores", methods=["GET"]) 
 @jwt_required()
 def get_scores():
+    print("get_scores") 
+    user = get_jwt_identity()
+    print(user)
     scores = score_controller.get_scores()
     return jsonify([
         {"key_id": s.key_id, "evidence_id": s.evidence_id, "score": s.score, "scoring_date": str(s.scoring_date)}
@@ -26,7 +33,7 @@ def get_score(key_id, evidence_id):
     return jsonify({"error": "Score not found"}), 404
 
 
-@score_bp.route("/scores", methods=["POST"])
+@score_bp.route("/scores", methods=["POST"]) 
 def add_score():
     data = request.json
     key_id = data.get("key_id")
@@ -39,6 +46,7 @@ def add_score():
     score = score_controller.add_score(key_id, evidence_id, score_value)
     return jsonify({"message": "Score added successfully", "score_id": [score.key_id, score.evidence_id]}), 201
 
+
 @score_bp.route("/scores/<int:key_id>/<int:evidence_id>", methods=["PUT"])
 def update_score(key_id, evidence_id):
     data = request.json
@@ -48,6 +56,7 @@ def update_score(key_id, evidence_id):
     if score:
         return jsonify({"message": "Score updated successfully"})
     return jsonify({"error": "Score not found"}), 404
+
 
 @score_bp.route("/scores/<int:key_id>/<int:evidence_id>", methods=["DELETE"])
 def delete_score(key_id, evidence_id):

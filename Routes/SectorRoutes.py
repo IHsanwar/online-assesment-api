@@ -1,7 +1,10 @@
 from flask import Blueprint, request
 from Controllers.SectorController import SectorController
-from fastapi import APIRouter
+from flask import jsonify 
+
 sector_bp = Blueprint("sector", __name__)
+
+
 
 @sector_bp.route("/sectors", methods=["GET"])
 def get_all_sectors():
