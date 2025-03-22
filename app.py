@@ -5,8 +5,8 @@ import os
 
 from Routes import ScoreRoutes, EvidenceRoutes, CompetencyKeyRoutes, SectorRoutes, IndicatorRoutes, CompetencyCategoryRoutes, JobLevelRoutes, JobFunctionRoute, AssesmentRoleRoutes
 from Models.Connection import SessionLocal, Base, engine
-from Controllers.MiddlewareController import setup_auth_routes, login_required
-
+from Controllers.MiddlewareController import *
+from Controllers.LoginController import *
 app = Flask(__name__)
 load_dotenv()
 
