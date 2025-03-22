@@ -1,7 +1,16 @@
-from Models.Connection import db
+from sqlalchemy import Column, Integer, String
+from Models.Connection import Base, SessionLocal
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    google_id = db.Column(db.String(100), unique=True, nullable=False)
-    email = db.Column(db.String(100), unique=True, nullable=False)
-    name = db.Column(db.String(100))
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(120), unique=True, nullable=False)
+    name = Column(String(100), nullable=False)
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

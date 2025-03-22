@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from Controllers.SectorController import SectorController
-
+from fastapi import APIRouter
 sector_bp = Blueprint("sector", __name__)
 
 @sector_bp.route("/sectors", methods=["GET"])

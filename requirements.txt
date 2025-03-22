@@ -1,3 +1,12 @@
 sqlite3
 flask
 sqlalchemy
+google-auth-oauthlib 
+flask-sqlalchemy 
+pyjwt 
+python-dotenv
+fastapi 
+uvicorn
+psycopg2-binary 
+authlib 
+passlib
