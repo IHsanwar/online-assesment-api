@@ -1,11 +1,12 @@
 from flask import Blueprint, request, jsonify
 from Controllers.ScoreController import ScoreController,Score
-
+from flask_jwt_extended import jwt_required, get_jwt_identity
 score_bp = Blueprint("score_bp", __name__)
 
 score_controller = ScoreController()
 
 @score_bp.route("/scores", methods=["GET"])
+@jwt_required()
 def get_scores():
     scores = score_controller.get_scores()
     return jsonify([

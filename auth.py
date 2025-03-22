@@ -1,44 +1,56 @@
 import os
-from flask import Blueprint, request, jsonify, redirect, url_for
+
+from flask import Blueprint, request, jsonify, redirect, url_for, Flask
 from flask_jwt_extended import create_access_token
 from flask_dance.contrib.google import make_google_blueprint, google
 from Models.Connection import SessionLocal
 from Models.User import User
 from datetime import timedelta
 
-auth_bp = Blueprint("auth_bp", __name__)
+app = Flask(__name__)
+app.config['JWT_SECRET'] = os.getenv("JWT_SECRET", "jwt-secret-key")
 
-# Google OAuth Blueprint
-google_bp = make_google_blueprint(
-    client_id=os.getenv("GOOGLE_CLIENT_ID"),
-    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
-    redirect_to="auth_bp.google_login"
-)
+def generate_jwt(user_id):
+    payload = {
+        'user_id': user_id,
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1),
+        'iat': datetime.datetime.utcnow()
+    }
+    return jwt.encode(payload, app.config['JWT_SECRET'], algorithm='HS256')
 
-auth_bp.register_blueprint(google_bp, url_prefix="/login")  # Pastikan ini ada
+def jwt_required(f):
+    def decorated_function(*args, **kwargs):
+        token = request.headers.get("Authorization")
+        
+        if not token or not token.startswith("Bearer "):
+            return jsonify({"error": "Unauthorized"}), 401
+        
+        token = token.split(" ")[1]
 
-@auth_bp.route("/login/google")
-def google_login():
-    if not google.authorized:
-        return redirect(url_for("google.login"))  # Pastikan ini sesuai
-    
-    resp = google.get("/oauth2/v2/userinfo")
-    if resp.ok:
-        user_info = resp.json()
-        email = user_info.get("email")
-        name = user_info.get("name")
-
-        db = SessionLocal()
         try:
-            user = db.query(User).filter_by(email=email).first()
-            if not user:
-                user = User(email=email, name=name)
-                db.add(user)
-                db.commit()
+            decoded = jwt.decode(token, app.config['JWT_SECRET'], algorithms=['HS256'])
+            return f(decoded['user_id'], *args, **kwargs)
+        except jwt.ExpiredSignatureError:
+            return jsonify({"error": "Token expired"}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({"error": "Invalid token"}), 401
+    return decorated_function
 
-            access_token = create_access_token(identity=email, expires_delta=timedelta(hours=1))
-            return jsonify(access_token=access_token, user={"email": email, "name": name})
-        finally:
-            db.close()
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    user_id = data.get("user_id")  # Simulasi autentikasi
 
-    return jsonify({"error": "Google authentication failed"}), 400
+    if not user_id:
+        return jsonify({"error": "Invalid credentials"}), 401
+
+    token = generate_jwt(user_id)
+    return jsonify({"token": token})
+
+@app.route('/protected', methods=['GET'])
+@jwt_required
+def protected(current_user):
+    return jsonify({"message": "Success", "user_id": current_user})
+
+if __name__ == '__main__':
+    app.run(debug=True)
