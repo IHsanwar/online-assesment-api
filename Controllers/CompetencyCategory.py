@@ -8,7 +8,7 @@ class CompetencyCategoryController:
 
     def get_all_categories(self):
         categories = self.session.query(CompetencyCategory).all()
-        return [{"category_id": c.category_id, "category_name": c.category_name} for c in categories]
+        return [{"category_id": c.category_id, "category_name": c.category_name , "description": c.description} for c in categories]
 
     def get_category_by_id(self, category_id):
         category = self.session.query(CompetencyCategory).filter_by(category_id=category_id).first()
@@ -16,16 +16,27 @@ class CompetencyCategoryController:
             return {"category_id": category.category_id, "category_name": category.category_name}
         return None
 
-    def add_category(self, category_name):
+    def add_category(self, category_name, description=None, core=None):
         existing_category = self.session.query(CompetencyCategory).filter_by(category_name=category_name).first()
         if existing_category:
             return {"error": "Category already exists"}, 400
-        
-        new_category = CompetencyCategory(category_name=category_name)
+
+        new_category = CompetencyCategory(
+            category_name=category_name,
+            description=description,
+            core=core
+        )
         self.session.add(new_category)
         self.session.commit()
-        return {"message": "Category added successfully", "category_id": new_category.category_id}, 201
-
+        return {
+            "message": "Category added successfully",
+            "category_id": new_category.category_id,
+            "category_name": new_category.category_name,
+            "description": new_category.description,
+            "core": new_category.core
+        }, 201
+    
+    
     def update_category(self, category_id, category_name):
         category = self.session.query(CompetencyCategory).filter_by(category_id=category_id).first()
         if not category:

@@ -6,10 +6,9 @@ import os, google
 from Routes import (
     CompetencyKeyRoutes, SectorRoutes,ScoreRoutes,
     IndicatorRoutes, CompetencyCategoryRoutes, JobLevelRoutes, JobFunctionRoute,
-    AssesmentRoleRoutes,MainRoutes
+    AssesmentRoleRoutes,MainRoutes,EvidenceRoutes
 ) 
  
-from Routes.EvidenceRoutes import evidence_bp
 
 
 app = Flask(__name__)
@@ -29,7 +28,7 @@ def log_request_info():
 
 # 📌 Mendaftarkan semua blueprint#
 app.register_blueprint(MainRoutes.main_bp)
-app.register_blueprint(evidence_bp, url_prefix='/evidences')
+app.register_blueprint(EvidenceRoutes.evidence_bp, url_prefix='/evidences')
 app.register_blueprint(CompetencyKeyRoutes.competency_key_bp)
 app.register_blueprint(IndicatorRoutes.indicator_bp)
 app.register_blueprint(CompetencyCategoryRoutes.competency_category_bp)

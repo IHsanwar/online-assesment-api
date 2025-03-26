@@ -21,20 +21,20 @@ def get_evidence_route(id):
 @evidence_bp.route('/evidences', methods=['POST'])
 def create_evidence():
     data = request.json
-    response = create_evidence(data)
+    response = evidenceController.create_evidences(data)
     return jsonify(response)
 
 @evidence_bp.route('/evidences/<int:id>', methods=['PUT'])
 def update_evidence(id):
     data = request.json
-    response = update_evidence(id, data)
+    response = evidenceController.update_evidences(id, data)
     if not response:
         return jsonify({'error': 'Evidence not found'}), 404
     return jsonify(response)
 
 @evidence_bp.route('/evidences/<int:id>', methods=['DELETE'])
-def delete_evidence(id):
-    response = delete_evidence(id)
+def delete_evidences(id):
+    response = evidenceController.delete_evidence(id)
     if not response:
         return jsonify({'error': 'Evidence not found'}), 404
     return jsonify(response)

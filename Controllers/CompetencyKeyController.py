@@ -35,10 +35,9 @@ class CompetencyKeyController:
 
     def add_competency_key():
         data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
         
-        if not data or "key_code" not in data or "competency_name" not in data or "category_id" not in data:
-            return jsonify({"error": "Missing required fields"}), 400
-
         with SessionLocal() as session:
             category = session.query(CompetencyCategory).filter_by(category_id=data["category_id"]).first()
             if not category:

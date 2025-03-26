@@ -1,9 +1,8 @@
-from flask import Blueprint, request, redirect, Flask
+from flask import Blueprint, request, redirect, Flask,jsonify
 import os
 import requests, jwt, datetime
 from authlib.integrations.flask_client import OAuth 
-from flask_jwt_extended import create_access_token
-
+from flask_jwt_extended import get_jwt_identity,create_access_token,jwt_required
 oauth = OAuth(Flask(__name__))
 google = oauth.register(
     name='google',
@@ -85,13 +84,14 @@ def login():
     if user_email != "test@example.com":
         return jsonify({"error": "Invalid credentials"}), 401
 
-    from flask_jwt_extended import create_access_token
     access_token = create_access_token(identity=user_email)
     
     return jsonify({"token": access_token})
 
 # Route terlindungi contoh
+
 @main_bp.route("/protected", methods=["GET"]) 
+@jwt_required() 
 def protected():
     """Endpoint hanya bisa diakses dengan token valid"""
     current_user = get_jwt_identity()

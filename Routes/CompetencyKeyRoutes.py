@@ -7,7 +7,7 @@ competency_key_bp = Blueprint('competency_key', __name__)
 @competency_key_bp.route('/competency_keys', methods=['GET'])
 def get_competency_key():
     get_competency_keys = CompetencyKeyController.get_competency_keys()
-    return jsonify(get_competency_keys)
+    return get_competency_keys
 
 @competency_key_bp.route("/competency_keys/<int:key_id>", methods=["GET"])
 def get_competency_key_by_id(key_id):

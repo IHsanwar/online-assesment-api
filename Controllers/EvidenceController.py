@@ -33,7 +33,7 @@ class evidenceController:
         }
 
 
-    def create_evidence(data):
+    def create_evidences(data):
         new_evidence = Evidence(
             indicator_id=data.get('indicator_id'),
             evidence=data.get('evidence'),
@@ -44,7 +44,7 @@ class evidenceController:
         session.commit()
         return {'message': 'Evidence created successfully'}
 
-    def update_evidence(id, data):
+    def update_evidences(id, data):
         evidence = session.query(Evidence).filter_by(id=id).first()
         if not evidence:
             return None
