@@ -38,4 +38,4 @@ def update_indicator(indicator_id):
 
 @indicator_bp.route("/indicators/<int:indicator_id>", methods=["DELETE"])
 def delete_indicator(indicator_id):
-    return jsonify(controller.delete_indicator(indicator_id))
+    return jsonify(controller.delete_indicator(indicator_id) )
